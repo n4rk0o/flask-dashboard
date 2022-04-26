@@ -1,0 +1,151 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Tables {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<button onclick="toto()">Click me</button>
+
+<h1>Authors</h1>
+<ul id="authors"></ul>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <div class="d-flex px-2 py-1" style="margin-bottom: 30px;">
+            <div>
+              <img src="/static/assets/img/details.png" class="avatar avatar-sm me-3">
+            </div>
+            <div class="d-flex flex-column justify-content-center">
+              <h5 class="mb-0 text-sm">Request status</h6>
+            </div>
+          </div>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table id="dtGeneric" class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  {% for key in keys %}
+                  {% if key != "resource" %}
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                    style="padding-left:0.5rem">{{ key }}</th>
+                  {% endif %}
+                  {% endfor %}
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                    style="padding-left:0.5rem"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for value in data %}
+                <tr>
+                  <td>
+                    <div class="d-flex px-2 py-1">
+                      <div>
+                        <img src="/static/assets/img/id.png" class="avatar avatar-sm me-3">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="mb-0 text-sm">{{ value['_id'] }}</h6>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <h6 class="text-xs font-weight-bold mb-0">{{ value['hostname'] }}</h6>
+                  </td>
+                  <td>
+                    <h6 class="text-xs font-weight-bold mb-0">{{ value['dns_suffix'] }}</h6>
+                  </td>
+                  <td>
+                    {% if "success" in value['status'] %}
+                    <span class="badge badge-sm bg-gradient-success">{{ value['status'] }}</span>
+                    {% elif "error" in value['status'] %}
+                    <span class="badge badge-sm bg-gradient-danger">{{ value['status'] }}</span>
+                    {% elif "skipped" in value['status'] %}
+                    <span class="badge badge-sm bg-gradient-warning">{{ value['status'] }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <span class="text-secondary text-xs font-weight-bold">{{ value['update'] }}</span>
+                  </td>
+                  <td>
+                    <span class="text-secondary text-xs font-weight-bold">{{ value['operating_system'] }}</span>
+                  </td>
+                  <td>
+                    <div class="container mt-3">
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#modal-{{ value['_id'] }}">
+                        Get details
+                      </button>
+                    </div>
+
+                    <!-- The Modal -->
+                    <div class="modal" id="modal-{{ value['_id'] }}">
+                      <div class="modal-dialog modal-fullscreen">
+                        <div class="modal-content">
+
+                          <!-- Modal Header -->
+                          <div class="modal-header">
+                            <div>
+                              <img src="/static/assets/img/id.png" class="avatar avatar-sm me-3">
+                            </div>
+                            <h6 class="modal-title">{{ value['_id'] }}</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                          </div>
+
+                          <!-- Modal body -->
+                          <div class="modal-body" style="overflow-x: auto;">
+                            <table class="table align-items-center mb-0">
+                              <thead>
+                                <tr>
+                                  {% set keys = value['resource'][0].keys() %}
+                                  {% for key in keys %}
+                                  <th
+                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    {{ key }}</th>
+                                  {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for value in value['resource'] %}
+                                <tr>
+                                  {% for key in keys %}
+                                  <td>{{ value[key] }}</td>
+                                  {% endfor %}
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+
+                          <!-- Modal footer -->
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include "includes/footer.html" %}
+
+  </div>
+
+  {% endblock content %}
+
+
+
+  <!-- Specific JS goes HERE -->
+  {% block javascripts %}{% endblock javascripts %}

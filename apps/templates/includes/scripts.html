@@ -1,0 +1,64 @@
+<!--   Core JS Files   -->
+<script src="/static/assets/js/core/popper.min.js"></script>
+<script src="/static/assets/js/core/bootstrap.min.js"></script>
+<script src="/static/assets/js/plugins/perfect-scrollbar.min.js"></script>
+<script src="/static/assets/js/plugins/smooth-scrollbar.min.js"></script>
+
+<!-- Page Specific JS Files   -->
+<script src="/static/assets/js/plugins/choices.min.js"></script>
+<script src="/static/assets/js/plugins/fullcalendar.min.js"></script>
+<script src="/static/assets/js/plugins/chartjs.min.js"></script>
+
+<script>
+  var win = navigator.platform.indexOf('Win') > -1;
+  if (win && document.querySelector('#sidenav-scrollbar')) {
+    var options = {
+      damping: '0.5'
+    }
+    Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+  }
+  $(document).ready(function () {
+    $('#dtGeneric').DataTable({
+      language: {
+        'paginate': {
+          'previous': '<span class="prev-icon"><</span>',
+          'next': '<span class="next-icon">></span>'
+        }
+      }
+    });
+  }
+  );
+</script>
+<script>
+  function createNode(element) {
+    return document.createElement(element);
+  }
+
+  function append(parent, el) {
+    return parent.appendChild(el);
+  }
+
+  const ul = document.getElementById('authors');
+  const url = 'https://randomuser.me/api/?results=10';
+
+  function toto() {
+    fetch(url)
+      .then((resp) => resp.json())
+      .then(function (data) {
+        let authors = data.results;
+        return authors.map(function (author) {
+          let li = createNode('li');
+          let img = createNode('img');
+          let span = createNode('span');
+          img.src = author.picture.medium;
+          span.innerHTML = `${author.name.first} ${author.name.last}`;
+          append(li, img);
+          append(li, span);
+          append(ul, li);
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+  };
+</script>
